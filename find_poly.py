@@ -67,7 +67,7 @@ while ((abs(dif) > eps) and count < max_iteration):
 schema = { 'geometry': 'Polygon', 'properties': { 'id': 'int' } }
 #writing out
 with collection(
-       intfile, "w", "ESRI Shapefile", schema) as output:
+       intfile, "w", "ESRI Shapefile", schema,{'init': 'epsg:2039'}) as output:
            output.write({
                 'properties': {
                     'id': 1
@@ -80,7 +80,7 @@ schema = { 'geometry': 'Point', 'properties': { 'id': 'int' } }
 center = inter.centroid
 #writing out
 with collection(
-       cntfile, "w", "ESRI Shapefile", schema) as output:
+       cntfile, "w", "ESRI Shapefile", schema,{'init': 'epsg:2039'}) as output:
            output.write({
                 'properties': {
                     'id': 1
