@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose: create sampling polygon with a defined sized around
+# Name:        creat_poly
+# Purpose: create sampling polygon with a defined size around
 # randomly selected point constraint by the valid area polygon
 #
 # Author:      Ron Drori (ron.drori@hamaarag.org.il)
@@ -33,11 +33,11 @@ def create_sample_poly(spoly, spoint):
     buf_r     = 125.        # buffer around the point in meters
     poly_area = 62500.      # output polygon area
     eps       = 1e-6        # desired accuracy of polygon area
-    delt      = 1.0        # delta for changing change buffer (buf_r)
-    max_iteration = 10000    # maximum number of iteration
+    delt      = 1.0         # delta for changing change buffer (buf_r)
+    max_iteration = 10000   # maximum number of iteration
 
     #dummy varibles
-    flip  = 0
+    #flip  = 0
     count = 0
 
     # first creat a buffer around the random point
@@ -56,10 +56,10 @@ def create_sample_poly(spoly, spoint):
         if (dif > 0):
             buf_r = buf_r + delt
         else:
-            flip = 1
-            delt = delt/2.      # for convegence
+            #flip = 1
+            delt = delt/2.      # for convergence
             buf_r = buf_r - delt
-            flip = 0
+            #flip = 0
         bpoint=spoint.buffer(buf_r)
         inter = spoly.intersection(bpoint.envelope)
         area = inter.area
@@ -75,8 +75,8 @@ def main():
     path = "G:\\Data\\UNITS\\Harhanegev\\test_sample\\"
     pntfile = "G:\\Data\\UNITS\\Harhanegev\\near_sample\\points_250m.shp"
     polfile = "G:\\Data\\UNITS\\Harhanegev\\near_clean\\near_yeruham_single_gt250.shp"
-    intfile = path+"sampling_polygons1.shp"
-    cntfile = path+"sampling_centroids1.shp"
+    intfile = path+"sampling_polygons3.shp"
+    cntfile = path+"sampling_centroids3.shp"
 
 
     # loop over points
@@ -87,7 +87,7 @@ def main():
                 spoly = find_containing_poly(spoint, polfile)
                 poly  = create_sample_poly(spoly, spoint)
                 #writing out
-                schema = { 'geometry': 'Polygon', 'properties': { 'id': 'int' } }
+                schema = { 'geometry': 'Polygon', 'properties': { 'id': 'int', 'area': 'float' } }
                 id=id+1
                 print id
                 if (id == 1):
@@ -100,7 +100,8 @@ def main():
                        intfile, status, "ESRI Shapefile", schema,{'init': 'epsg:2039'}) as output:
                            output.write({
                                 'properties': {
-                                    'id': id
+                                    'id': id,
+                                    'area': poly.area
                                 },
                                  'geometry': mapping(poly)
                             })
